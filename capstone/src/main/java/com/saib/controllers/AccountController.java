@@ -23,7 +23,8 @@ public class AccountController {
 	
 	/*
 	 *  GET - /accounts - Get me all details 
-	 *  GET - /accounts/id - Get me details for a single account 
+	 *  GET - /accounts/id - Get me details for a single account
+	 *  GET - /accounts/type - Get all accounts with a given type
 	 *  POST - /accounts - Creating a new account 
 	 *  PUT - /accounts/id - Updating an existing account 
 	 *  DELETE -/accounts/id - for deleting an account from db
@@ -52,6 +53,16 @@ public class AccountController {
 		Account account=accountService.getAccountByAccountNumber(accountNumber);
 		
 		ApiSuccessPayload payload=ApiSuccessPayload.build(account, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
+	
+	@GetMapping("/accounts/type/{type}")
+	public ResponseEntity<ApiSuccessPayload> getAccountsByType(@PathVariable String type)
+	{
+		List<Account> list = accountService.getAccountsByType(type);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
 		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
 		return response;
 	}
