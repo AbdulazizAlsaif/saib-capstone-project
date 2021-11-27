@@ -1,5 +1,8 @@
 package com.saib.services;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.saib.config.ApiSuccessPayload;
+import com.saib.models.Account;
 import com.saib.models.Transaction;
+import com.saib.repository.AccountRepository;
 import com.saib.repository.TransactionRepository;
 import com.saib.util.Results;
 
@@ -20,6 +25,7 @@ public class TransactionService {
 	
 	@Autowired
 	TransactionRepository transactionRepository;
+	AccountRepository accountRepository;
 	
 	
 
@@ -49,7 +55,7 @@ public class TransactionService {
 		if(!list.isEmpty())
 			return list;
 		else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With type " + type + " does not exits");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With type " + type + " does not exists");
 		}
 		
 		
@@ -58,6 +64,33 @@ public class TransactionService {
 	public String addTransaction(Transaction transaction)
 	{
 		String result="";
+		
+		
+		
+		Optional<Account> fromAccount = accountRepository.findById(transaction.getFromAccount());
+		Optional<Account> toAccount = accountRepository.findById(transaction.getToAccount());
+		if(!fromAccount.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "From Account does not exits");
+		}
+		if(!toAccount.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "To Account does not exits");
+		}
+		
+		double newFromAccountBalance = fromAccount.get().getBalance()-transaction.getAmount();
+		double newToAccountBalance = toAccount.get().getBalance()+transaction.getAmount();
+		if(newFromAccountBalance >= 0) {
+		fromAccount.get().setBalance(newFromAccountBalance);
+		toAccount.get().setBalance(newToAccountBalance);
+		
+		}
+		else
+		{
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "insufficent funds");
+		}
+		accountRepository.save(fromAccount.get());
+		accountRepository.save(toAccount.get());
+		
+		
 		Transaction storedTransaction=transactionRepository.save(transaction);
 		if(storedTransaction!=null) {
 			result=Results.SUCCESS;
@@ -103,4 +136,33 @@ public class TransactionService {
 		}
 		
 	}
+	
+	
+	public List<Transaction> getTransactionsByAccountId(long accountNumber)
+	{
+		List<Transaction> list=transactionRepository.findByToAccount(accountNumber);
+		list.addAll(transactionRepository.findByFromAccount(accountNumber));
+
+		if(!list.isEmpty())
+			return list;
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With Account number " + accountNumber + " does not exits");
+		}
+		
+		
+	}
+	
+	public List<Transaction> getTransactionsByDate(String date) {
+			
+			List<Transaction> list=transactionRepository.findByDate(LocalDate.parse(date));
+	
+			if(!list.isEmpty())
+				return list;
+			else {
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With given date does not exists");
+			}
+			
+	}
+
+	
 }

@@ -11,5 +11,7 @@ import com.saib.models.Account;
 public interface AccountRepository extends JpaRepository<Account,Long>{
 
 	  List<Account> findByAccountType(String accountType);
+
+	  List<Account> findByStatus(String status);
 	 
 }

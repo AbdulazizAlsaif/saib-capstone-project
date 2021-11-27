@@ -1,5 +1,8 @@
 package com.saib.controllers;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,22 +70,23 @@ public class TransactionController {
 		return response;
 	}
 	
-	@PostMapping("/transaction")
-	public ResponseEntity<ApiSuccessPayload> addTransaction(@RequestBody Transaction transaction)
-	{
-		ResponseEntity<ApiSuccessPayload> response=null;
-		System.out.println(transaction);
-		String result=transactionService.addTransaction(transaction);
-		if(result.equalsIgnoreCase(Results.SUCCESS))
-		{
-			ApiSuccessPayload payload=ApiSuccessPayload.build(result, "Transaction created successfully", HttpStatus.CREATED);
-			response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.CREATED);
-			
-		}
-		return response;
-		
-	}
-	
+//Error Cannot deserialize value of type `java.time.LocalDate` from String
+//	@PostMapping("/transaction")
+//	public ResponseEntity<ApiSuccessPayload> addTransaction(@RequestBody Transaction transaction)
+//	{
+//		ResponseEntity<ApiSuccessPayload> response=null;
+//		System.out.println(transaction);
+//		String result=transactionService.addTransaction(transaction);
+//		if(result.equalsIgnoreCase(Results.SUCCESS))
+//		{
+//			ApiSuccessPayload payload=ApiSuccessPayload.build(result, "Transaction created successfully", HttpStatus.CREATED);
+//			response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.CREATED);
+//			
+//		}
+//		return response;
+//		
+//	}
+//	
 
 	@PutMapping("/transaction/{transactionId}")
 	public ResponseEntity<ApiSuccessPayload> updateTransaction(@RequestBody Transaction transaction, @PathVariable long transactionId)
@@ -103,5 +107,26 @@ public class TransactionController {
 	}
 	
 	
+	
+	@GetMapping("/transaction/filter/account/{accountNumber}")
+	public ResponseEntity<ApiSuccessPayload> getTransactionsByAccountId(@PathVariable long accountNumber)
+	{
+		List<Transaction> list = transactionService.getTransactionsByAccountId(accountNumber);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
+	
+	@GetMapping("/transaction/filter/date/{date}")
+	public ResponseEntity<ApiSuccessPayload> getTransactionsByDate(@PathVariable String date)
+	{
+		
+		List<Transaction> list = transactionService.getTransactionsByDate(date);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
 	
 }

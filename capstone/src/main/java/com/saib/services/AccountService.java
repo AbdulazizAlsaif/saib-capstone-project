@@ -103,4 +103,16 @@ public class AccountService {
 		
 	}
 
+	public List<Account> getAccountsByStatus(String status) {
+		
+		List<Account> list = accountRepository.findByStatus(status);
+		if(!list.isEmpty())
+			return list;
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Accounts With Status : " + status + " does not exits");
+		}
+		
+		
+	}
+
 }
