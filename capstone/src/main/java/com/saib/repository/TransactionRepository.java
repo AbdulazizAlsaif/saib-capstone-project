@@ -14,10 +14,12 @@ public interface TransactionRepository extends JpaRepository<Transaction,Long> {
 	
 	List<Transaction> findByTransactionType(String transactionType);
 
-	List<Transaction> findByToAccount(long accountNumber );
+	List<Transaction> findByToAccount(long accountNumber);
 
 	List<Transaction> findByFromAccount(long accountNumber);
 
-	List<Transaction> findByDate(LocalDate parse);
+	List<Transaction> findByDate(LocalDate date);
+
+	List<Transaction> findByTransactionTypeAndDate( String transactionType, LocalDate date);
 	
 }

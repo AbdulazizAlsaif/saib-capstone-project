@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import io.swagger.annotations.ApiModelProperty;
+
 
 
 @Entity
@@ -45,6 +47,7 @@ public class Transaction {
 	private double amount;
 	
 	@Column(name="date")
+	@ApiModelProperty(example = "yyyy-MM-dd")
 	private LocalDate date;
 	
 	@Column(name="time")

@@ -36,7 +36,7 @@ public class AccountController {
 	 */
 	@Autowired
 	AccountService accountService;
-	//handle errors
+	
 	
 	@GetMapping("/accounts")
 	public ResponseEntity<ApiSuccessPayload> getAllAccounts()
@@ -46,82 +46,6 @@ public class AccountController {
 		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Accounts Fetched", HttpStatus.OK);
 		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
 		
-		return response;
-		
-	}
-	
-	@GetMapping("/accounts/{accountNumber}")
-	public ResponseEntity<ApiSuccessPayload> getAccountbyAccountNumber(@PathVariable long accountNumber)
-	{
-		Account account=accountService.getAccountByAccountNumber(accountNumber);
-		
-		ApiSuccessPayload payload=ApiSuccessPayload.build(account, "Success",HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
-		return response;
-	}
-	
-	@GetMapping("/accounts/status/{status}")
-	public ResponseEntity<ApiSuccessPayload> getAccountByStatus(@PathVariable String status){
-		
-		List<Account> list = accountService.getAccountsByStatus(status);
-		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
-		return response;
-		
-	}
-	
-	@GetMapping("/accounts/filter/type/{type}")
-	public ResponseEntity<ApiSuccessPayload> getAccountsByType(@PathVariable String type)
-	{
-		List<Account> list = accountService.getAccountsByType(type);
-		
-		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
-		return response;
-	}
-	
-	@PostMapping("/accounts")
-	public ResponseEntity<ApiSuccessPayload> addAccount(@RequestBody Account account)
-	{
-		ResponseEntity<ApiSuccessPayload> response=null;
-		System.out.println(account);
-		String result=accountService.addAccount(account);
-		if(result.equalsIgnoreCase(Results.SUCCESS))
-		{
-			ApiSuccessPayload payload=ApiSuccessPayload.build(result, "Account created successfully", HttpStatus.CREATED);
-			response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.CREATED);
-		}
-		
-		return response;
-	
-	}
-	
-	@PutMapping("/accounts/{accountNumber}")
-	public ResponseEntity<ApiSuccessPayload> updateAccount(@RequestBody Account account, @PathVariable long accountNumber)
-	{
-		String result=accountService.updateAccount(account, accountNumber);
-		ApiSuccessPayload payload=ApiSuccessPayload.build(result,result,HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, HttpStatus.OK);
-		return response;
-	}
-	
-	@DeleteMapping("/accounts/{accountNumber}")
-	public ResponseEntity<ApiSuccessPayload> deleteAccount(@PathVariable long accountNumber)
-	{
-		String result=accountService.deleteAccount(accountNumber);
-		ApiSuccessPayload payload=ApiSuccessPayload.build(result,result,HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, HttpStatus.OK);
-		return response;
-	}
-	
-	
-	@GetMapping("/accounts/gender/{gender}")
-	public ResponseEntity<ApiSuccessPayload> getAccountByGender(@PathVariable String gender)
-	{
-		List<Account> list=accountService.getAccountsByGender(gender);
-		HttpStatus status=HttpStatus.OK;
-		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Accounts Found",status);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, status);
 		return response;
 		
 	}
@@ -151,5 +75,85 @@ public class AccountController {
 		
 		
 	}
+	
+	@GetMapping("/account/{accountNumber}")
+	public ResponseEntity<ApiSuccessPayload> getAccountbyAccountNumber(@PathVariable long accountNumber)
+	{
+		Account account=accountService.getAccountByAccountNumber(accountNumber);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(account, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
+	
+	
+	@PostMapping("/account")
+	public ResponseEntity<ApiSuccessPayload> addAccount(@RequestBody Account account)
+	{
+		ResponseEntity<ApiSuccessPayload> response=null;
+		System.out.println(account);
+		String result=accountService.addAccount(account);
+		if(result.equalsIgnoreCase(Results.SUCCESS))
+		{
+			ApiSuccessPayload payload=ApiSuccessPayload.build(result, "Account created successfully", HttpStatus.CREATED);
+			response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.CREATED);
+		}
+		
+		return response;
+	
+	}
+	
+	@PutMapping("/account/{accountNumber}")
+	public ResponseEntity<ApiSuccessPayload> updateAccount(@RequestBody Account account, @PathVariable long accountNumber)
+	{
+		String result=accountService.updateAccount(account, accountNumber);
+		ApiSuccessPayload payload=ApiSuccessPayload.build(result,result,HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, HttpStatus.OK);
+		return response;
+	}
+	
+	@DeleteMapping("/account/{accountNumber}")
+	public ResponseEntity<ApiSuccessPayload> deleteAccount(@PathVariable long accountNumber)
+	{
+		String result=accountService.deleteAccount(accountNumber);
+		ApiSuccessPayload payload=ApiSuccessPayload.build(result,result,HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, HttpStatus.OK);
+		return response;
+	}
+	
+	
+	@GetMapping("/accounts/filter/status/{status}")
+	public ResponseEntity<ApiSuccessPayload> getAccountByStatus(@PathVariable String status){
+		
+		List<Account> list = accountService.getAccountsByStatus(status);
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+		
+	}
+	
+	@GetMapping("/accounts/filter/type/{type}")
+	public ResponseEntity<ApiSuccessPayload> getAccountsByType(@PathVariable String type)
+	{
+		List<Account> list = accountService.getAccountsByType(type);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
+	
+	@GetMapping("/accounts/filter/gender/{gender}")
+	public ResponseEntity<ApiSuccessPayload> getAccountByGender(@PathVariable String gender)
+	{
+		List<Account> list=accountService.getAccountsByGender(gender);
+		HttpStatus status=HttpStatus.OK;
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Accounts Found",status);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, status);
+		return response;
+		
+	}
+
+	
+
 
 }

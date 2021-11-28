@@ -30,6 +30,7 @@ public class TransactionService {
 	
 	@Autowired
 	TransactionRepository transactionRepository;
+	@Autowired
 	AccountRepository accountRepository;
 	
 	
@@ -69,11 +70,9 @@ public class TransactionService {
 	public String addTransaction(Transaction transaction)
 	{
 		String result="";
-		
-		
-		
 		Optional<Account> fromAccount = accountRepository.findById(transaction.getFromAccount());
 		Optional<Account> toAccount = accountRepository.findById(transaction.getToAccount());
+		
 		if(!fromAccount.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "From Account does not exits");
 		}
@@ -92,9 +91,9 @@ public class TransactionService {
 		{
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "insufficent funds");
 		}
+		
 		accountRepository.save(fromAccount.get());
 		accountRepository.save(toAccount.get());
-		
 		
 		Transaction storedTransaction=transactionRepository.save(transaction);
 		if(storedTransaction!=null) {
@@ -157,9 +156,9 @@ public class TransactionService {
 		
 	}
 	
-	public List<Transaction> getTransactionsByDate(String date) {
+	public List<Transaction> getTransactionsByDate(LocalDate date) {
 			
-			List<Transaction> list=transactionRepository.findByDate(LocalDate.parse(date));
+			List<Transaction> list=transactionRepository.findByDate(date);
 	
 			if(!list.isEmpty())
 				return list;
@@ -170,20 +169,35 @@ public class TransactionService {
 	}
 
 
-	public List<Transaction> getAllTransaction(int pageNo, int pageSize, String sortBy) {
+	public List<Transaction> getAllTransactions(int pageNo, int pageSize, String sortBy) {
+
 
 		
 		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
 		Page<Transaction> pageResult=transactionRepository.findAll(paging);
 		int total = pageResult.getTotalPages();
 		System.out.println(total);
-		
 		if(pageResult.hasContent()) {
 			return pageResult.getContent();
 		}
 		else
 			return new ArrayList<Transaction>();
 		
+	}
+	
+
+
+	public List<Transaction> getTransactionsByDateAndType(LocalDate date, String type) {
+		
+		List<Transaction> list=transactionRepository.findByTransactionTypeAndDate(type, date);
+		
+		if(!list.isEmpty())
+			return list;
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transactions With the provdid input does not exists");
+		}
+		
+
 	}
 	
 

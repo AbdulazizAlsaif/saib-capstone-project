@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "account")
 public class Account {
 	@Id
-//	@GeneratedValue (strategy = GenerationType.IDENTITY)
+	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	@Column(name="account_number")
 	private long accountNumber;
 	
@@ -45,7 +45,7 @@ public class Account {
 	
 	@Column(name="creation_date")
 	private LocalDateTime creationDate;
-
+	
 	@Column(name="last_updated")
 	private LocalDateTime lastUpdated;
 	
