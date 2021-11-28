@@ -1,7 +1,7 @@
 package com.saib.models;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Table(name = "account")
 public class Account {
 	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
+//	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	@Column(name="account_number")
 	private long accountNumber;
 	
@@ -44,10 +44,10 @@ public class Account {
 	private double creditLimit;
 	
 	@Column(name="creation_date")
-	private OffsetDateTime creationDate;
+	private LocalDateTime creationDate;
 
 	@Column(name="last_updated")
-	private OffsetDateTime lastUpdated;
+	private LocalDateTime lastUpdated;
 	
 	@Column(name="status")
 	private String status;
@@ -58,8 +58,8 @@ public class Account {
 	}
 
 	public Account(long accountNumber, String name, String gender, String email, String phone, String address,
-			String accountType, double balance, double creditLimit, OffsetDateTime creationDate,
-			OffsetDateTime lastUpdated, String status) {
+			String accountType, double balance, double creditLimit, LocalDateTime creationDate,
+			LocalDateTime lastUpdated, String status) {
 		super();
 		this.accountNumber = accountNumber;
 		this.name = name;
@@ -147,19 +147,19 @@ public class Account {
 		this.creditLimit = creditLimit;
 	}
 
-	public OffsetDateTime getCreationDate() {
+	public LocalDateTime getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(OffsetDateTime creationDate) {
+	public void setCreationDate(LocalDateTime creationDate) {
 		this.creationDate = creationDate;
 	}
 
-	public OffsetDateTime getLastUpdated() {
+	public LocalDateTime getLastUpdated() {
 		return lastUpdated;
 	}
 
-	public void setLastUpdated(OffsetDateTime lastUpdated) {
+	public void setLastUpdated(LocalDateTime lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 

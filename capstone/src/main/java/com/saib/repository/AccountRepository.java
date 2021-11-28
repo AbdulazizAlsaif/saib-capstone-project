@@ -13,5 +13,7 @@ public interface AccountRepository extends JpaRepository<Account,Long>{
 	  List<Account> findByAccountType(String accountType);
 
 	  List<Account> findByStatus(String status);
+
+	  List<Account> findAccountByGender(String gender);
 	 
 }

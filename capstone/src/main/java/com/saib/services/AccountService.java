@@ -1,10 +1,15 @@
 package com.saib.services;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.saib.models.Account;
 import com.saib.repository.AccountRepository;
 import com.saib.util.Results;
+
+import io.sentry.Sentry;
+
 
 @Service
 public class AccountService {
@@ -97,6 +105,7 @@ public class AccountService {
 			return result;
 		}
 		catch (Exception e) {
+			Sentry.captureException(e);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 		
@@ -115,4 +124,46 @@ public class AccountService {
 		
 	}
 
-}
+	public List<Account> getAccountsByGender(String gender){
+			
+			List<Account> accounts=accountRepository.findAccountByGender(gender);
+			return accounts;
+		}
+	
+
+
+
+	public List<Account> getAllAccounts(Integer pageNo, Integer pageSize){
+		
+		
+		Pageable paging = PageRequest.of(pageNo, pageSize);
+		Page<Account> pageResult=accountRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
+		}
+		else
+			return new ArrayList<Account>();
+		
+	}
+	
+
+	public List<Account> getAllAccounts(Integer pageNo, Integer pageSize, String sortBy){
+		
+		
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		Page<Account> pageResult=accountRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
+		}
+		else
+			return new ArrayList<Account>();
+		
+	}
+	
+	}
