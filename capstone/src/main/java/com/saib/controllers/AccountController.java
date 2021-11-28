@@ -36,7 +36,7 @@ public class AccountController {
 	 */
 	@Autowired
 	AccountService accountService;
-	
+	//handle errors
 	
 	@GetMapping("/accounts")
 	public ResponseEntity<ApiSuccessPayload> getAllAccounts()

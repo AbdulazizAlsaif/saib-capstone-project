@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.saib.config.ApiSuccessPayload;
+import com.saib.models.Account;
 import com.saib.models.Transaction;
 import com.saib.services.TransactionService;
 import com.saib.util.Results;
@@ -118,6 +120,8 @@ public class TransactionController {
 		return response;
 	}
 	
+	//handle errors
+	
 	@GetMapping("/transaction/filter/date/{date}")
 	public ResponseEntity<ApiSuccessPayload> getTransactionsByDate(@PathVariable String date)
 	{
@@ -129,4 +133,17 @@ public class TransactionController {
 		return response;
 	}
 	
+	//Handle errors
+	@GetMapping("/transaction/all/sorted")
+	public ResponseEntity<ApiSuccessPayload> getAllTransaction(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String sortBy ){
+		
+		
+		List<Transaction> list=transactionService.getAllTransaction(pageNo, pageSize ,sortBy);
+		HttpStatus status=HttpStatus.OK;
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Transaction Found",status);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, status);
+		return response;
+		
+		
+	}
 }

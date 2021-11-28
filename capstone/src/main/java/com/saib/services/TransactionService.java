@@ -3,10 +3,15 @@ package com.saib.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -163,6 +168,24 @@ public class TransactionService {
 			}
 			
 	}
+
+
+	public List<Transaction> getAllTransaction(int pageNo, int pageSize, String sortBy) {
+
+		
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		Page<Transaction> pageResult=transactionRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
+		}
+		else
+			return new ArrayList<Transaction>();
+		
+	}
+	
 
 	
 }
