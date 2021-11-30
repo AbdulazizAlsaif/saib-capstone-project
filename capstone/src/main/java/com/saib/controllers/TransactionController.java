@@ -28,13 +28,17 @@ import com.saib.util.Results;
 public class TransactionController {
 	
 	/*
-	 *  GET - /transaction - Get me all details 
-	 *  GET - /transaction/id - Get me details for a single transaction
-	 *  GET - /transaction/type - Get all transaction with a given type
-	 *  POST - /transaction - Creating a new transaction 
+	 *  GET - /transactions - Get all transactions in the database
+	 *  GET - /accounts/all - Get  all  transactions in the database with pagination
+	 *  GET - /transactions/all/sorted - Get all transactions in the database with pagination and sorting
+	 *  POST - /transactions - Creating a new transaction 
 	 *  PUT - /transaction/id - Updating an existing transaction 
-	 *  DELETE -/transaction/id - for deleting an transaction from db
-	 *  
+	 *  DELETE -/transaction/id - for deleting an transaction from database
+	 *  GET - /transaction/id - Get details for a single transaction
+	 *  GET - /transactions/filter/account/{id} - Get all transaction with a given account id
+	 *  GET - /transactions/filter/type - Get all transaction with a given type
+	 *  GET - /transactions/filter/date - Get all transaction with a given date
+	 *  GET - /transactions/filter/date&type - Get all transaction with a given date and type
 	 *  
 	 */
 	
@@ -53,6 +57,19 @@ public class TransactionController {
 		
 	}
 	
+	@GetMapping("/transactions/all")
+	public ResponseEntity<ApiSuccessPayload> getAllTransactions(@RequestParam int pageNo, @RequestParam int pageSize ){
+		
+		
+		List<Transaction> list=transactionService.getAllTransactions(pageNo, pageSize);
+		HttpStatus status=HttpStatus.OK;
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Transaction Found",status);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload, status);
+		return response;
+		
+		
+	}
+	
 	@GetMapping("/transactions/all/sorted")
 	public ResponseEntity<ApiSuccessPayload> getAllTransactions(@RequestParam int pageNo, @RequestParam int pageSize, @RequestParam String sortBy ){
 		
@@ -65,17 +82,6 @@ public class TransactionController {
 		
 		
 	}
-	
-	@GetMapping("/transaction/{transactionId}")
-	public ResponseEntity<ApiSuccessPayload> getTransactionByTransactionNumber(@PathVariable long transactionId)
-	{
-		Transaction transaction=transactionService.getTransactionByTransactionNumber(transactionId);
-		
-		ApiSuccessPayload payload=ApiSuccessPayload.build(transaction, "Success",HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
-		return response;
-	}
-	
 	
 
 	@PostMapping("/transaction")
@@ -94,7 +100,6 @@ public class TransactionController {
 		
 	}
 	
-
 	@PutMapping("/transaction/{transactionId}")
 	public ResponseEntity<ApiSuccessPayload> updateTransaction(@RequestBody Transaction transaction, @PathVariable long transactionId)
 	{
@@ -114,6 +119,15 @@ public class TransactionController {
 	}
 	
 	
+	@GetMapping("/transaction/{transactionId}")
+	public ResponseEntity<ApiSuccessPayload> getTransactionByTransactionNumber(@PathVariable long transactionId)
+	{
+		Transaction transaction=transactionService.getTransactionByTransactionNumber(transactionId);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(transaction, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
 	
 	@GetMapping("/transactions/filter/account/{accountNumber}")
 	public ResponseEntity<ApiSuccessPayload> getTransactionsByAccountId(@PathVariable long accountNumber)
@@ -135,19 +149,6 @@ public class TransactionController {
 		return response;
 	}
 	
-	
-	@GetMapping("/transactions/filter/date&type")
-	public ResponseEntity<ApiSuccessPayload> getTransactionsByDateAndType(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date , @RequestParam String type)
-	{
-		
-		List<Transaction> list = transactionService.getTransactionsByDateAndType(date,type);
-		
-		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
-		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
-		return response;
-	}
-	
-	
 	@GetMapping("/transactions/filter/date/{date}")
 	public ResponseEntity<ApiSuccessPayload> getTransactionsByDate(@PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date)
 	{
@@ -159,6 +160,16 @@ public class TransactionController {
 		return response;
 	}
 	
+	@GetMapping("/transactions/filter/date&type")
+	public ResponseEntity<ApiSuccessPayload> getTransactionsByDateAndType(@RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate date , @RequestParam String type)
+	{
+		
+		List<Transaction> list = transactionService.getTransactionsByDateAndType(date,type);
+		
+		ApiSuccessPayload payload=ApiSuccessPayload.build(list, "Success",HttpStatus.OK);
+		ResponseEntity<ApiSuccessPayload> response=new ResponseEntity<ApiSuccessPayload>(payload,HttpStatus.OK);
+		return response;
+	}
 	
 	
 }

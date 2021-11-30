@@ -41,31 +41,40 @@ public class TransactionService {
 		return list;
 	}
 		
-	
-	public Transaction getTransactionByTransactionNumber(long transactionNumber)
-	{
-		Optional<Transaction> optional=transactionRepository.findById(transactionNumber);
+
+	public List<Transaction> getAllTransactions(int pageNo, int pageSize) {
+
+
 		
-		if(optional.isPresent()) {
-			return optional.get();
+		Pageable paging = PageRequest.of(pageNo, pageSize);
+		Page<Transaction> pageResult=transactionRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
 		}
-		else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction with Transaction Number:"+transactionNumber+"doesn't exist");
-		}
+		else
+			return new ArrayList<Transaction>();
 		
 	}
 	
-	public List<Transaction> getTransactionsByType(String type)
-	{
-		List<Transaction> list=transactionRepository.findByTransactionType(type);
-		if(!list.isEmpty())
-			return list;
-		else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With type " + type + " does not exists");
-		}
+	public List<Transaction> getAllTransactions(int pageNo, int pageSize, String sortBy) {
+
+
 		
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		Page<Transaction> pageResult=transactionRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
+		}
+		else
+			return new ArrayList<Transaction>();
 		
 	}
+
+
 	
 	public String addTransaction(Transaction transaction)
 	{
@@ -142,6 +151,20 @@ public class TransactionService {
 	}
 	
 	
+	
+	public Transaction getTransactionByTransactionNumber(long transactionNumber)
+	{
+		Optional<Transaction> optional=transactionRepository.findById(transactionNumber);
+		
+		if(optional.isPresent()) {
+			return optional.get();
+		}
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction with Transaction Number:"+transactionNumber+"doesn't exist");
+		}
+		
+	}
+
 	public List<Transaction> getTransactionsByAccountId(long accountNumber)
 	{
 		List<Transaction> list=transactionRepository.findByToAccount(accountNumber);
@@ -151,6 +174,18 @@ public class TransactionService {
 			return list;
 		else {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With Account number " + accountNumber + " does not exits");
+		}
+		
+		
+	}
+	
+	public List<Transaction> getTransactionsByType(String type)
+	{
+		List<Transaction> list=transactionRepository.findByTransactionType(type);
+		if(!list.isEmpty())
+			return list;
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Transaction With type " + type + " does not exists");
 		}
 		
 		
@@ -168,25 +203,6 @@ public class TransactionService {
 			
 	}
 
-
-	public List<Transaction> getAllTransactions(int pageNo, int pageSize, String sortBy) {
-
-
-		
-		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-		Page<Transaction> pageResult=transactionRepository.findAll(paging);
-		int total = pageResult.getTotalPages();
-		System.out.println(total);
-		if(pageResult.hasContent()) {
-			return pageResult.getContent();
-		}
-		else
-			return new ArrayList<Transaction>();
-		
-	}
-	
-
-
 	public List<Transaction> getTransactionsByDateAndType(LocalDate date, String type) {
 		
 		List<Transaction> list=transactionRepository.findByTransactionTypeAndDate(type, date);
@@ -201,5 +217,5 @@ public class TransactionService {
 	}
 	
 
-	
 }
+

@@ -34,7 +34,39 @@ public class AccountService {
 	
 		
 	}
+
+	public List<Account> getAllAccounts(Integer pageNo, Integer pageSize){
+		
+		
+		Pageable paging = PageRequest.of(pageNo, pageSize);
+		Page<Account> pageResult=accountRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
+		}
+		else
+			return new ArrayList<Account>();
+		
+	}
 	
+	public List<Account> getAllAccounts(Integer pageNo, Integer pageSize, String sortBy){
+		
+		
+		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+		Page<Account> pageResult=accountRepository.findAll(paging);
+		int total = pageResult.getTotalPages();
+		System.out.println(total);
+		
+		if(pageResult.hasContent()) {
+			return pageResult.getContent();
+		}
+		else
+			return new ArrayList<Account>();
+		
+	}
+
 	public Account getAccountByAccountNumber(long accountNumber)
 	{
 		Optional<Account> optional=accountRepository.findById(accountNumber);
@@ -48,18 +80,7 @@ public class AccountService {
 		
 	}
 	
-	public List<Account> getAccountsByType(String type)
-	{
-		List<Account> list=accountRepository.findByAccountType(type);
-		if(!list.isEmpty())
-			return list;
-		else {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Account With type " + type + " does not exits");
-		}
-		
-		
-	}
-	
+
 	
 	public String addAccount(Account account)
 	{
@@ -105,13 +126,14 @@ public class AccountService {
 			return result;
 		}
 		catch (Exception e) {
-			Sentry.captureException(e);
+//			Sentry.captureException(e);
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 		
 		
 	}
 
+	
 	public List<Account> getAccountsByStatus(String status) {
 		
 		List<Account> list = accountRepository.findByStatus(status);
@@ -119,6 +141,18 @@ public class AccountService {
 			return list;
 		else {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Accounts With Status : " + status + " does not exits");
+		}
+		
+		
+	}
+	
+	public List<Account> getAccountsByType(String type)
+	{
+		List<Account> list=accountRepository.findByAccountType(type);
+		if(!list.isEmpty())
+			return list;
+		else {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Account With type " + type + " does not exits");
 		}
 		
 		
@@ -131,39 +165,4 @@ public class AccountService {
 		}
 	
 
-
-
-	public List<Account> getAllAccounts(Integer pageNo, Integer pageSize){
-		
-		
-		Pageable paging = PageRequest.of(pageNo, pageSize);
-		Page<Account> pageResult=accountRepository.findAll(paging);
-		int total = pageResult.getTotalPages();
-		System.out.println(total);
-		
-		if(pageResult.hasContent()) {
-			return pageResult.getContent();
-		}
-		else
-			return new ArrayList<Account>();
-		
-	}
-	
-
-	public List<Account> getAllAccounts(Integer pageNo, Integer pageSize, String sortBy){
-		
-		
-		Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-		Page<Account> pageResult=accountRepository.findAll(paging);
-		int total = pageResult.getTotalPages();
-		System.out.println(total);
-		
-		if(pageResult.hasContent()) {
-			return pageResult.getContent();
-		}
-		else
-			return new ArrayList<Account>();
-		
-	}
-	
-	}
+}

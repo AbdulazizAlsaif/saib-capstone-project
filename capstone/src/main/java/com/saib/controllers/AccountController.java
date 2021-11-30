@@ -25,13 +25,16 @@ import com.saib.util.Results;
 public class AccountController {
 	
 	/*
-	 *  GET - /accounts - Get me all details 
-	 *  GET - /accounts/id - Get me details for a single account
-	 *  GET - /accounts/type - Get all accounts with a given type
-	 *  POST - /accounts - Creating a new account 
-	 *  PUT - /accounts/id - Updating an existing account 
-	 *  DELETE -/accounts/id - for deleting an account from db
-	 *  
+	 *  POST - /accounts - Creating a new account
+	 *  GET - /accounts - Get  all  accounts in the database
+	 *  GET - /accounts/all - Get  all  accounts in the database with pagination
+	 *  GET - /accounts/all/sorted - Get  all  accounts in the database with pagination and sort
+	 *  GET - /accounts/{id} - Get me details for a single account
+	 *  PUT - /accounts/{id} - Updating an existing account 
+	 *  DELETE -/accounts/{id}- for deleting an account from db
+	 *  GET - /accounts/filter/status - Get all accounts with a given status
+	 *  GET - /accounts/filter/type - Get all accounts with a given type
+	 *  GET - /accounts/filter/gender - Get all accounts with a given gender
 	 *  
 	 */
 	@Autowired
